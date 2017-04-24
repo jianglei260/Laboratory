@@ -11,7 +11,8 @@ import cn.edu.cuit.liyun.laboratory.data.entity.Discuss;
 import cn.edu.cuit.liyun.laboratory.data.entity.User;
 
 /**
- * Created by jianglei on 2017/4/17.
+ * 讨论相关接口
+ * Created  on 2017/4/17.
  */
 
 public class DiscussRepository {
@@ -23,6 +24,12 @@ public class DiscussRepository {
         return instance;
     }
 
+    /**
+     * 发布一条信息
+     * @param sender
+     * @param content
+     * @param receivers
+     */
     public void send(User sender, String content, User... receivers) {
         Discuss discuss = new Discuss();
         discuss.setMessage(content);
@@ -35,6 +42,11 @@ public class DiscussRepository {
         save(discuss);
     }
 
+    /**
+     * 得到所有发给自己的信息
+     * @param receiver
+     * @return
+     */
     public List<Discuss> getAllDiscusses(User receiver) {
         AVQuery<Discuss> query = AVQuery.getQuery(Discuss.class);
         query.whereEqualTo("receivers", receiver);
@@ -46,6 +58,12 @@ public class DiscussRepository {
         return new ArrayList<>();
     }
 
+    /**
+     * 获取某个用户发送的所有信息
+     * @param receiver
+     * @param sender
+     * @return
+     */
     public List<Discuss> getAllDiscusses(User receiver, User sender) {
         AVQuery<Discuss> receiverQuery = AVQuery.getQuery(Discuss.class);
         receiverQuery.whereEqualTo("receivers", receiver);
@@ -59,6 +77,10 @@ public class DiscussRepository {
         return new ArrayList<>();
     }
 
+    /**
+     * 保存一条讨论信息
+     * @param discuss
+     */
     public void save(Discuss discuss) {
         try {
             discuss.save();

@@ -6,7 +6,8 @@ import com.avos.avoscloud.AVUser;
 import cn.edu.cuit.liyun.laboratory.data.entity.User;
 
 /**
- * Created by jianglei on 2017/4/15.
+ * 用户相关接口
+ * Created  on 2017/4/15.
  */
 
 public class UserRepository {
@@ -18,7 +19,13 @@ public class UserRepository {
         return instance;
     }
 
-    public User login(String userName, String password) {
+    /**
+     * 用户登录接口
+     * @param userName
+     * @param password
+     * @return
+     */
+   public User login(String userName, String password) {
         try {
             return AVUser.logIn(userName, password, User.class);
         } catch (AVException e) {
@@ -26,7 +33,12 @@ public class UserRepository {
         }
         return null;
     }
-
+    /**
+     * 用户注册接口
+     * @param userName
+     * @param password
+     * @return
+     */
     public User signUp(String userName, String password, User.Role role) {
         User user = new User();
         user.setUsername(userName);
@@ -41,10 +53,17 @@ public class UserRepository {
         return null;
     }
 
+    /**
+     * 退出登录
+     */
     public void logout() {
         AVUser.logOut();
     }
 
+    /**
+     * 获取当前用户
+     * @return
+     */
     public User getCurrentUser() {
         return AVUser.getCurrentUser(User.class);
     }

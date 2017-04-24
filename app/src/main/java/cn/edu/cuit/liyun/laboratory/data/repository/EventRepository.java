@@ -10,7 +10,8 @@ import cn.edu.cuit.liyun.laboratory.data.entity.Event;
 import cn.edu.cuit.liyun.laboratory.data.entity.User;
 
 /**
- * Created by jianglei on 2017/4/17.
+ * 活动相关接口
+ * Created on 2017/4/17.
  */
 
 public class EventRepository {
@@ -22,6 +23,10 @@ public class EventRepository {
         return instance;
     }
 
+    /**
+     * 获取所有活动
+     * @return
+     */
     public List<Event> getAllEvent() {
         AVQuery<Event> query = new AVQuery<>("Event");
         try {
@@ -32,6 +37,11 @@ public class EventRepository {
         return new ArrayList<>();
     }
 
+    /**
+     * 发布一条活动信息
+     * @param sender
+     * @param content
+     */
     public void sendEvent(User sender, String content) {
         Event event = new Event();
         event.setContent(content);
@@ -39,6 +49,10 @@ public class EventRepository {
         save(event);
     }
 
+    /**
+     * 保存活动信息到数据库
+     * @param event
+     */
     public void save(Event event) {
         try {
             event.save();

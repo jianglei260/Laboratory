@@ -6,7 +6,8 @@ import cn.edu.cuit.liyun.laboratory.data.entity.Team;
 import cn.edu.cuit.liyun.laboratory.data.entity.User;
 
 /**
- * Created by jianglei on 2017/4/17.
+ * 团队相关接口
+ * Created on 2017/4/17.
  */
 
 public class TeamRepository {
@@ -18,6 +19,12 @@ public class TeamRepository {
         return instance;
     }
 
+    /**
+     * 创建团队
+     * @param name
+     * @param leader
+     * @return
+     */
     public Team createTeam(String name, User leader) {
         Team team = new Team();
         team.setLeader(leader);
@@ -26,11 +33,20 @@ public class TeamRepository {
         return team;
     }
 
+    /**
+     * 添加团队成员
+     * @param team
+     * @param user
+     */
     public void addStudent(Team team, User user) {
         team.addStudents(user);
         save(team);
     }
 
+    /**
+     * 保存团队信息
+     * @param team
+     */
     public void save(Team team) {
         try {
             team.save();
@@ -39,6 +55,11 @@ public class TeamRepository {
         }
     }
 
+    /**
+     * 删除团队成员
+     * @param team
+     * @param student
+     */
     public void deleteStudent(Team team,User student){
        team.getRelation("stuents").remove(student);
     }

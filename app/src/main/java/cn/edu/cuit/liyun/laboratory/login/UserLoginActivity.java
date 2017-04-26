@@ -20,7 +20,6 @@ public class UserLoginActivity extends BaseActivity {
 
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        Canvas
         binding = DataBindingUtil.setContentView(this, R.layout.activity_user_login);
         LoginViewModel loginViewModel = new LoginViewModel(this);
         binding.setLoginViewModel(loginViewModel);

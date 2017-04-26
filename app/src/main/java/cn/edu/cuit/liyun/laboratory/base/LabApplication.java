@@ -9,6 +9,7 @@ import com.avos.avoscloud.AVUser;
 import cn.edu.cuit.liyun.laboratory.data.entity.DailyTime;
 import cn.edu.cuit.liyun.laboratory.data.entity.Discuss;
 import cn.edu.cuit.liyun.laboratory.data.entity.Event;
+import cn.edu.cuit.liyun.laboratory.data.entity.Team;
 import cn.edu.cuit.liyun.laboratory.data.entity.User;
 
 /**
@@ -26,10 +27,6 @@ public class LabApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        AVObject.registerSubclass(Event.class);
-        AVObject.registerSubclass(DailyTime.class);
-        AVObject.registerSubclass(Discuss.class);
-        AVObject.registerSubclass(Event.class);
         AVUser.alwaysUseSubUserClass(User.class);
         AVOSCloud.initialize(this, "MkaIThVom8VfFE4I0iR31RdB-gzGzoHsz", "hoNGn8dti59WVbMTVcDqqCIV");
     }

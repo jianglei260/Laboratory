@@ -5,6 +5,7 @@ import android.databinding.*;import java.lang.String;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;import cn.edu.cuit.liyun.laboratory.base.DetailViewModel;
+import cn.edu.cuit.liyun.laboratory.data.entity.Role;
 import cn.edu.cuit.liyun.laboratory.data.entity.User;
 import cn.edu.cuit.liyun.laboratory.data.repository.UserRepository;
 import cn.edu.cuit.liyun.laboratory.utils.IOTask;
@@ -38,7 +39,7 @@ public class SignUpViewModel extends DetailViewModel {
         RxUtil.execute(new IOTask<User>() {
             @Override
             public User run() {
-                return UserRepository.getInstance().signUp(account.get(), password.get(), User.Role.STUDENT);
+                return UserRepository.getInstance().signUp(account.get(), password.get(), Role.STUDENT);
             }
         }, new UIAction<User>() {
             @Override

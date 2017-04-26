@@ -9,6 +9,8 @@ import java.util.List;
 
 import cn.edu.cuit.liyun.laboratory.data.entity.Discuss;
 import cn.edu.cuit.liyun.laboratory.data.entity.User;
+import cn.edu.cuit.liyun.laboratory.data.entity.UserInfo;
+import cn.edu.cuit.liyun.laboratory.utils.LeanEngine;
 
 /**
  * Created by jianglei on 2017/4/17.
@@ -23,12 +25,12 @@ public class DiscussRepository {
         return instance;
     }
 
-    public void send(User sender, String content, User... receivers) {
+    public void send(UserInfo sender, String content, UserInfo... receivers) {
         Discuss discuss = new Discuss();
         discuss.setMessage(content);
         discuss.setSender(sender);
-        List<User> receiverList = new ArrayList<>();
-        for (User receiver : receivers) {
+        List<UserInfo> receiverList = new ArrayList<>();
+        for (UserInfo receiver : receivers) {
             receiverList.add(receiver);
         }
         discuss.setReceivers(receiverList);
@@ -36,34 +38,16 @@ public class DiscussRepository {
     }
 
     public List<Discuss> getAllDiscusses(User receiver) {
-        AVQuery<Discuss> query = AVQuery.getQuery(Discuss.class);
-        query.whereEqualTo("receivers", receiver);
-        try {
-            query.find();
-        } catch (AVException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
+        return LeanEngine.Query.get(Discuss.class).whereEqualTo("receivers", receiver).find();
     }
 
-    public List<Discuss> getAllDiscusses(User receiver, User sender) {
-        AVQuery<Discuss> receiverQuery = AVQuery.getQuery(Discuss.class);
-        receiverQuery.whereEqualTo("receivers", receiver);
-        AVQuery<Discuss> senderQuery = AVQuery.getQuery(Discuss.class);
-        senderQuery.whereEqualTo("sender", sender);
-        try {
-            return AVQuery.and(Arrays.asList(receiverQuery, senderQuery)).find();
-        } catch (AVException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
+    public List<Discuss> getAllDiscusses(UserInfo receiver, UserInfo sender) {
+        LeanEngine.Query receiverQuery = LeanEngine.Query.get(Discuss.class).whereEqualTo("receivers", receiver);
+        LeanEngine.Query senderQuery = LeanEngine.Query.get(Discuss.class).whereEqualTo("sender", sender);
+        return LeanEngine.Query.and(receiverQuery, senderQuery).find();
     }
 
     public void save(Discuss discuss) {
-        try {
-            discuss.save();
-        } catch (AVException e) {
-            e.printStackTrace();
-        }
+        LeanEngine.save(discuss);
     }
 }

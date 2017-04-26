@@ -8,6 +8,8 @@ import java.util.List;
 
 import cn.edu.cuit.liyun.laboratory.data.entity.Event;
 import cn.edu.cuit.liyun.laboratory.data.entity.User;
+import cn.edu.cuit.liyun.laboratory.data.entity.UserInfo;
+import cn.edu.cuit.liyun.laboratory.utils.LeanEngine;
 
 /**
  * Created by jianglei on 2017/4/17.
@@ -23,16 +25,10 @@ public class EventRepository {
     }
 
     public List<Event> getAllEvent() {
-        AVQuery<Event> query = new AVQuery<>("Event");
-        try {
-            return query.find();
-        } catch (AVException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
+        return LeanEngine.Query.get(Event.class).find();
     }
 
-    public void sendEvent(User sender, String content) {
+    public void sendEvent(UserInfo sender, String content) {
         Event event = new Event();
         event.setContent(content);
         event.setSender(sender);
@@ -40,10 +36,6 @@ public class EventRepository {
     }
 
     public void save(Event event) {
-        try {
-            event.save();
-        } catch (AVException e) {
-            e.printStackTrace();
-        }
+        LeanEngine.save(event);
     }
 }

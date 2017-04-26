@@ -112,5 +112,15 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="56dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{loginViewModel.testClick}"
+            android:layout_centerHorizontal="true"
+            android:text="测试"
+            android:padding="8dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 </layout>

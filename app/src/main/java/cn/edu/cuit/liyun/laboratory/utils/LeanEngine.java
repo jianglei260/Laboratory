@@ -7,23 +7,32 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVRelation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import cn.edu.cuit.liyun.laboratory.data.entity.User;
 import cn.edu.cuit.liyun.laboratory.data.entity.UserInfo;
 
+
 /**
  * Created by jianglei on 2017/4/25.
  */
 
 public class LeanEngine {
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface Entity {
+    }
+
     private static final String TAG = "LeanEngine";
 
     public static <T> AVObject toAVObject(T t) {
@@ -35,16 +44,28 @@ public class LeanEngine {
                 field.setAccessible(true);
                 Object fieldObject = field.get(t);
                 if (fieldObject instanceof Collection) {
+                    if (((Collection) fieldObject).size() <= 0) {
+                        continue;
+                    }
                     AVRelation relation = avObject.getRelation(field.getName());
                     for (Object o : ((Collection) fieldObject)) {
-                        relation.add(toAVObject(o));
+                        if (o == null)
+                            continue;
+                        AVObject object = toAVObject(o);
+                        object.save();
+                        relation.add(object);
                     }
                 } else if (putAsBuiltIn(field, t, avObject)) {
                     continue;
                 } else if (field.getType().isEnum()) {
                     putEnum(field, t, avObject);
+                } else if (putAsPrimiteType(field, t, avObject)) {
+                    continue;
                 } else {
-                    avObject.put(field.getName(), fieldObject);
+                    Object o = field.get(t);
+                    if (o == null)
+                        continue;
+                    avObject.put(field.getName(), toAVObject(o));
                 }
             }
         } catch (Exception e) {
@@ -53,9 +74,116 @@ public class LeanEngine {
         return avObject;
     }
 
+    public static <T> boolean insertToList(T t, String name, Object value) {
+        try {
+            AVObject avObject = toAVObjectWithoutData(t);
+            AVObject object = toAVObject(value);
+            object.save();
+            avObject.getRelation(name).add(object);
+            avObject.save();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static <T> boolean removeFromList(T t, String name, List values) {
+        try {
+            AVObject avObject = toAVObjectWithoutData(t);
+            for (Object value : values) {
+                avObject.getRelation(name).remove(toAVObjectWithoutData(value));
+            }
+            avObject.save();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static <T> AVObject toAVObjectWithoutData(T t) {
+        try {
+            Method method = t.getClass().getMethod("getObjectId");
+            String objectId = (String) method.invoke(t);
+            AVObject avObject = AVObject.createWithoutData(t.getClass().getSimpleName(), objectId);
+            return avObject;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return AVObject.create(t.getClass().getSimpleName());
+    }
+
+    public static <T> boolean updateField(T t, String name, Object value) {
+        try {
+            AVObject avObject = toAVObjectWithoutData(t);
+            Field field = t.getClass().getDeclaredField(name);
+            field.setAccessible(true);
+            if (value instanceof AVObject) {
+                avObject.put(name, value);
+            } else if (value instanceof List) {
+                List list = (List) value;
+                for (Object o : list) {
+                    AVObject object = toAVObject(o);
+                    object.save();
+                    avObject.getRelation(name).add(object);
+                }
+            } else if (putAsBuiltIn(field, t, avObject)) {
+            } else if (field.getType().isEnum()) {
+                putEnum(field, t, avObject);
+            } else if (putAsPrimiteType(field, t, avObject)) {
+            } else {
+                avObject.put(name, toAVObject(value));
+            }
+            avObject.save();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private static <T> boolean putAsPrimiteType(Field field, T object, AVObject avObject) {
+        String type = field.getType().getName();
+        try {
+            if (type.equals(String.class.getName())) {
+                String value = "";
+                if (field.get(object) != null) {
+                    value = (String) field.get(object);
+                }
+                avObject.put(field.getName(), value);
+                return true;
+            }
+            if (type.equals("int") || type.equals(Integer.class.getName())) {
+                avObject.put(field.getName(), field.get(object));
+                return true;
+            }
+            if (type.equals("float") || type.equals(Float.class.getName())) {
+                avObject.put(field.getName(), field.get(object));
+                return true;
+            }
+            if (type.equals("double") || type.equals(Double.class.getName())) {
+                avObject.put(field.getName(), field.get(object));
+                return true;
+            }
+            if (type.equals("long") || type.equals(Long.class.getName())) {
+                avObject.put(field.getName(), field.get(object));
+                return true;
+            }
+            if (type.equals("boolean") || type.equals(Boolean.class.getName())) {
+                avObject.put(field.getName(), field.get(object));
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private static <T> boolean putAsBuiltIn(Field field, T t, AVObject avObject) {
         try {
-            if (field.getName().equals("obejctId")) {
+            if (field.getName().equals("objectId")) {
                 avObject.setObjectId((String) field.get(t));
                 return true;
             }
@@ -74,7 +202,6 @@ public class LeanEngine {
     public static <T> T toObject(AVObject avObject, Class<T> clazz) {
         try {
             T t = clazz.newInstance();
-            handleBuildInField(clazz, t, avObject);
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 try {
@@ -92,6 +219,8 @@ public class LeanEngine {
                             }
                         }
                         field.set(t, list);
+                    } else if (handleBuildInField(field, t, avObject)) {
+                        continue;
                     } else if (field.getType().isEnum()) {
                         handleEnum(field, t, avObject);
                     } else if (!handleAsPrimiteType(field, t, avObject)) {
@@ -121,8 +250,26 @@ public class LeanEngine {
             return query;
         }
 
+        public Query<T> whereLessThan(String key, Object value) {
+            avQuery.whereLessThan(key, value);
+            return this;
+        }
+
+        public Query<T> whereGreaterThan(String key, Object value) {
+            avQuery.whereGreaterThan(key, value);
+            return this;
+        }
+
         public Query<T> whereEqualTo(String key, Object value) {
-            avQuery.whereEqualTo(key, value);
+            try {
+                if (value.getClass().getAnnotation(Entity.class) != null) {
+                    avQuery.whereEqualTo(key, toAVObjectWithoutData(value));
+                } else {
+                    avQuery.whereEqualTo(key, value);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return this;
         }
 
@@ -134,6 +281,18 @@ public class LeanEngine {
             }
             query.avQuery = AVQuery.and(avQueries);
             return query;
+        }
+
+        public T findFrist() {
+            try {
+                AVObject objects = avQuery.getFirst();
+                if (objects != null) {
+                    return toObject(objects, clazz);
+                }
+            } catch (AVException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         public List<T> find() {
@@ -155,6 +314,7 @@ public class LeanEngine {
 
     public static UserInfo getUserInfo(User user) {
         try {
+            user.fetch();
             AVObject object = user.getInfo();
             object.fetchIfNeeded();
             return toObject(object, UserInfo.class);
@@ -164,11 +324,13 @@ public class LeanEngine {
         return new UserInfo();
     }
 
-    public static <T> void save(T t) {
+    public static <T> boolean save(T t) {
         try {
             toAVObject(t).save();
+            return true;
         } catch (AVException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -201,53 +363,58 @@ public class LeanEngine {
         return false;
     }
 
+    public static <T> boolean equeal(T t1, T t2) {
+        if (t1.equals(t2)) {
+            return true;
+        }
+        try {
+            Method method = t1.getClass().getMethod("getObjectId");
+            if (method != null) {
+                String objectId = (String) method.invoke(t1);
+                String objectId1 = (String) method.invoke(t2);
+                if (objectId.equals(objectId1)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static <T> boolean remove(List<T> list, T t) {
         for (T t1 : list) {
-            if (t1.equals(t)){
+            if (t1.equals(t)) {
                 list.remove(t1);
                 return true;
-            }
-            try {
-                Method method=t.getClass().getMethod("getObjectId");
-                if (method!=null){
-                    String objectId= (String) method.invoke(t);
-                    String objectId1= (String) method.invoke(t1);
-                    if (objectId.equals(objectId1)){
-                        list.remove(t1);
-                        return true;
-                    }else {
-                        return false;
-                    }
-                }
-                return false;
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         return false;
     }
 
 
-    private static void handleBuildInField(Class clazz, Object object, AVObject avObject) {
+    private static <T> boolean handleBuildInField(Field field, T object, AVObject avObject) {
         try {
-            Field idField = clazz.getDeclaredField("objectId");
-            if (idField != null) {
-                idField.setAccessible(true);
-                idField.set(object, avObject.getObjectId());
+            String name = field.getName();
+            if (name.equals("objectId")) {
+                field.set(object, avObject.getObjectId());
+                return true;
             }
-            Field createAtField = clazz.getDeclaredField("createdAt");
-            if (createAtField != null) {
-                createAtField.setAccessible(true);
-                createAtField.set(object, avObject.getCreatedAt());
+            if (name.equals("createdAt")) {
+                field.set(object, String.valueOf(avObject.getCreatedAt().getTime()));
+                return true;
             }
-            Field updatedAtField = clazz.getDeclaredField("updatedAt");
-            if (updatedAtField != null) {
-                updatedAtField.setAccessible(true);
-                updatedAtField.set(object, avObject.getUpdatedAt());
+            if (name.equals("updatedAt")) {
+                field.set(object, String.valueOf(avObject.getCreatedAt().getTime()));
+                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     private static boolean handleAsPrimiteType(Field field, Object object, AVObject avObject) {

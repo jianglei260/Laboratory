@@ -16,13 +16,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".login.UserLoginActivity">
+        <activity android:name=".login.UserLoginActivity" />
+        <activity android:name=".login.UserSignActivity" />
+        <activity android:name=".main.MainActivity" />
+        <activity android:name=".dailytime.SignActivity" />
+        <activity android:name=".event.SendEventActivity" />
+        <activity android:name=".discuss.CreateDiscussActivity" />
+        <activity android:name=".me.UserInfoActivity" />
+        <activity android:name=".team.TeamListActivity" />
+        <activity android:name=".team.TeamDetailActivity" />
+        <activity android:name=".team.CreateTeamActivity" />
+        <activity android:name=".dailytime.NewSignActivity" />
+        <activity android:name=".dailytime.SignDetailActivity" />
+        <activity android:name=".dailytime.SignListActivity" />
+        <activity android:name=".splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.UserSignActivity" />
+        <activity android:name=".discuss.DiscussDetailActivity" />
+        <activity android:name=".settings.SettingActivity" />
+        <activity android:name=".user.UserListActivity"></activity>
     </application>
 
 </manifest>

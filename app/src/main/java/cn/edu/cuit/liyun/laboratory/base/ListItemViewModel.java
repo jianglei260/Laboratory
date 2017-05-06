@@ -1,5 +1,5 @@
 package cn.edu.cuit.liyun.laboratory.base;
-public abstract class ListItemViewModel {
+public abstract class ListItemViewModel extends BaseViewModel {
     public static final int VIEW_TYPE_NORMAL = 0;
     public static final int VIEW_TYPE_LOAD_MORE = 1;
     public static final int VIEW_TYPE_LOAD_FINISH = 2;

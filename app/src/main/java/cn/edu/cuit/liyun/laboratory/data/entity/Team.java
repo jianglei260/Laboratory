@@ -7,10 +7,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import cn.edu.cuit.liyun.laboratory.utils.LeanEngine;
+
 /**
  * Created by jianglei on 2017/4/15.
  */
 //团队
+@LeanEngine.Entity
 public class Team  {
     private String teamName;//团队名称
     private UserInfo leader;//团队负责人

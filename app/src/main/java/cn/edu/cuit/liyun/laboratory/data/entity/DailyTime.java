@@ -3,19 +3,23 @@ package cn.edu.cuit.liyun.laboratory.data.entity;
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
 
+import cn.edu.cuit.liyun.laboratory.utils.LeanEngine;
+
 /**
  * Created by jianglei on 2017/4/15.
  */
 //签到
+@LeanEngine.Entity
 public class DailyTime {
     private long time;//签到时间
     private String code;//签到码
     private boolean signed;//是否签到
     private String reason;//未签到原因
-    private User signer;
+    private UserInfo signer;
     private String objectId;//对象id
     private String createdAt;//对象创建时间
     private String updatedAt;//对象更新时间
+    private UserInfo sender;
 
     public long getTime() {
         return time;
@@ -49,11 +53,11 @@ public class DailyTime {
         this.reason = reason;
     }
 
-    public User getSigner() {
+    public UserInfo getSigner() {
         return signer;
     }
 
-    public void setSigner(User signer) {
+    public void setSigner(UserInfo signer) {
         this.signer = signer;
     }
 
@@ -79,6 +83,14 @@ public class DailyTime {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public UserInfo getSender() {
+        return sender;
+    }
+
+    public void setSender(UserInfo sender) {
+        this.sender = sender;
     }
     //    public long getTime() {
 //        return getLong("time");

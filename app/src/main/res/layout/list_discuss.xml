@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="itemViewModel"
+            type="cn.edu.cuit.liyun.laboratory.discuss.DiscussItemViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+        <RelativeLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:clickCommand="@{itemViewModel.itemClick}">
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_below="@id/title"
+                android:layout_margin="8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@{itemViewModel.title}"
+                android:gravity="center_vertical"
+                android:textSize="18sp"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/sender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/content"
+                android:layout_margin="8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@{itemViewModel.sender}" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/content"
+                android:layout_margin="8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@{itemViewModel.date}" />
+        </RelativeLayout>
+
+</layout>

@@ -28,14 +28,15 @@ public class EventRepository {
         return LeanEngine.Query.get(Event.class).find();
     }
 
-    public void sendEvent(UserInfo sender, String content) {
+    public boolean sendEvent(UserInfo sender, String title, String content) {
         Event event = new Event();
         event.setContent(content);
+        event.setTitle(title);
         event.setSender(sender);
-        save(event);
+        return save(event);
     }
 
-    public void save(Event event) {
-        LeanEngine.save(event);
+    public boolean save(Event event) {
+        return LeanEngine.save(event);
     }
 }

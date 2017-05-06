@@ -5,6 +5,7 @@ import android.app.Application;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 import cn.edu.cuit.liyun.laboratory.data.entity.DailyTime;
 import cn.edu.cuit.liyun.laboratory.data.entity.Discuss;
@@ -27,6 +28,7 @@ public class LabApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        Fresco.initialize(this);
         AVUser.alwaysUseSubUserClass(User.class);
         AVOSCloud.initialize(this, "MkaIThVom8VfFE4I0iR31RdB-gzGzoHsz", "hoNGn8dti59WVbMTVcDqqCIV");
     }

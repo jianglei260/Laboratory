@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="itemViewModel"
+            type="cn.edu.cuit.liyun.laboratory.event.EventItemViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        app:cardCornerRadius="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@{itemViewModel.title}"
+                android:textColor="@color/black"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title"
+                android:layout_margin="8dp"
+                android:ellipsize="end"
+                android:text="@{itemViewModel.content}" />
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/head"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="10dp"
+                app:imageUri="@{itemViewModel.userHead}"
+                app:placeholderImage="@drawable/ic_head_default"
+                app:roundAsCircle="true"
+                app:roundingBorderColor="@color/colorPrimary"
+                app:roundingBorderWidth="1dp"
+                android:layout_below="@id/content"/>
+
+            <TextView
+                android:id="@+id/sender"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_below="@id/content"
+                android:layout_margin="8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@{itemViewModel.sender}"
+                android:layout_toRightOf="@id/head"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/content"
+                android:layout_margin="8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@{itemViewModel.date}"
+                android:gravity="center_vertical"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+</layout>

@@ -3,11 +3,15 @@ package cn.edu.cuit.liyun.laboratory.data.entity;
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
 
+import cn.edu.cuit.liyun.laboratory.utils.LeanEngine;
+
 /**
  * Created by jianglei on 2017/4/15.
  */
 //活动
+@LeanEngine.Entity
 public class Event {
+    private String title;//标题
     private String content;//活动内容
     private UserInfo sender;//活动发布者
     private String objectId;//对象id
@@ -52,6 +56,14 @@ public class Event {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     //    public String getContent() {
